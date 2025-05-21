@@ -25,7 +25,7 @@ export function Modal({ isOpen, closeModal, children }: Props) {
         className="fixed inset-0 z-30 flex w-full items-center justify-center"
       >
         <div
-          className="absolute inset-0 bg-black bg-opacity-50"
+          className="absolute inset-0 opacity-30 bg-black"
           onClick={closeModal}
         />
         <div className="relative z-40 items-center justify-center rounded-lg bg-white">
