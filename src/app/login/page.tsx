@@ -1,8 +1,7 @@
-'use client';
-import React from 'react';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '../../auth/firebase';
-import axios from 'axios';
+"use client";
+import React from "react";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../auth/firebase";
 
 const Page = () => {
   const loginWithGoogle = async () => {
@@ -12,7 +11,7 @@ const Page = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      console.log('로그인 성공:', user.displayName);
+      console.log("로그인 성공:", user.displayName);
 
       // ✅ Firebase ID Token 추출 (JWT 형식)
       const idToken = await user.getIdToken();
@@ -32,7 +31,7 @@ const Page = () => {
       // console.log( 백엔드 응답:', response.data);
       return user;
     } catch (error) {
-      console.error('❌ 로그인 또는 토큰 전송 실패:', error);
+      console.error("❌ 로그인 또는 토큰 전송 실패:", error);
       return null;
     }
   };
