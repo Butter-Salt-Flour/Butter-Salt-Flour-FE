@@ -1,20 +1,7 @@
-"use client";
-
-import { useState } from "react";
-
-import { Calendar } from "@/components/ui/calendar";
-import { DatePickerDemo } from "@/components/ui/datePicker";
-
-export default function Page() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-
+export default function Home() {
   return (
-    // <Calendar
-    //   mode="single"
-    //   selected={date}
-    //   onSelect={setDate}
-    //   className="rounded-md border shadow"
-    // />
-    <DatePickerDemo />
+    <div className="bg-prima flex justify-center text-2xl">
+      Butter-Salt-Flour
+    </div>
   );
 }
