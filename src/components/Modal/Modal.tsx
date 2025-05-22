@@ -1,6 +1,5 @@
 import React from "react";
 import { motion } from "framer-motion";
-
 import { Portal } from "../Portal";
 
 type Props = {
@@ -18,20 +17,24 @@ export const MODAL_MOTION = {
 export function Modal({ isOpen, closeModal, children }: Props) {
   return (
     <Portal isOpen={isOpen}>
-      <motion.div
-        initial={MODAL_MOTION.initial}
-        animate={MODAL_MOTION.animate}
-        exit={MODAL_MOTION.exit}
-        className="fixed inset-0 z-30 flex w-full items-center justify-center"
-      >
-        <div
-          className="absolute inset-0 opacity-30 bg-black"
+      <div className="fixed inset-0 z-30 flex items-center justify-center">
+        <motion.div
+          className="absolute inset-0 bg-black"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.3 }}
+          exit={{ opacity: 0 }}
           onClick={closeModal}
         />
-        <div className="relative z-40 items-center justify-center rounded-lg bg-white">
+
+        <motion.div
+          className="relative z-40 items-center justify-center rounded-lg bg-white"
+          initial={MODAL_MOTION.initial}
+          animate={MODAL_MOTION.animate}
+          exit={MODAL_MOTION.exit}
+        >
           {children}
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </Portal>
   );
 }
