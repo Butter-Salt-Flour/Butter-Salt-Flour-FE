@@ -1,20 +1,13 @@
-"use client";
+import React from "react";
+import { Spinner } from "basic-loading";
 
-import { useState } from "react";
+export default function App() {
+  const option = {
+    size: 40, // string 타입 주의! 숫자가 아니라 "50"
+    bgColor: "#3B82F6", // 파란색
+    barColor: "#BAD5E8", // 흰색
+    thickness: 5,
+  };
 
-import { Calendar } from "@/components/ui/calendar";
-import { DatePickerDemo } from "@/components/ui/datePicker";
-
-export default function Page() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-
-  return (
-    // <Calendar
-    //   mode="single"
-    //   selected={date}
-    //   onSelect={setDate}
-    //   className="rounded-md border shadow"
-    // />
-    <DatePickerDemo />
-  );
+  return <Spinner option={option} />;
 }
