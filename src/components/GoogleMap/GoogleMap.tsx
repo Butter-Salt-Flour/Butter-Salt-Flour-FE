@@ -3,7 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Spinner } from "basic-loading";
 
-const GoogleMap = ({ address }: { address: string }) => {
+interface GoogleMapProps {
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+const GoogleMap = ({ address, latitude, longitude }: GoogleMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,26 +39,33 @@ const GoogleMap = ({ address }: { address: string }) => {
     loader
       .load()
       .then(() => {
-        const geocoder = new google.maps.Geocoder();
-
-        geocoder.geocode({ address: address }, (results, status) => {
-          if (results) {
-            if (status === "OK") {
-              setMapLocation(results[0].geometry.location);
-              setIsLoading(false);
-            } else {
-              setError(`주소를 찾을 수 없습니다: ${status}`);
-              setIsLoading(false);
+        if (latitude && longitude) {
+          setMapLocation(new google.maps.LatLng(latitude, longitude));
+          setIsLoading(false);
+        } else if (address) {
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ address: address }, (results, status) => {
+            if (results) {
+              if (status === "OK") {
+                setMapLocation(results[0].geometry.location);
+                setIsLoading(false);
+              } else {
+                setError(`주소를 찾을 수 없습니다: ${status}`);
+                setIsLoading(false);
+              }
             }
-          }
-        });
+          });
+        } else {
+          setError("주소 또는 위도/경도가 필요합니다.");
+          setIsLoading(false);
+        }
       })
       .catch((err) => {
         setError("Google Maps 로딩 중 오류가 발생했습니다.");
         setIsLoading(false);
         console.error(err);
       });
-  }, [address]);
+  }, [address, latitude, longitude]);
 
   useEffect(() => {
     if (!mapLocation || !mapRef.current) return;
@@ -86,7 +99,7 @@ const GoogleMap = ({ address }: { address: string }) => {
 
   return (
     <div
-      className="min-h-[20rem] min-w-[20rem] border-gray-400 p-2 rounded"
+      className="min-h-[30rem] min-w-[20rem] border-gray-400 p-2 rounded"
       ref={mapRef}
     />
   );
