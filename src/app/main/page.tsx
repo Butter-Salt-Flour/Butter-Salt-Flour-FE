@@ -5,7 +5,7 @@ import GoogleMap from "@/components/GoogleMap/GoogleMap";
 import { Button } from "@/components/Button";
 import { Ellipse } from "@/assets/Icons";
 import { Icon } from "@/components/Icon";
-import { Subtitle1, Subtitle2, Title1 } from "@/components/Typography";
+import { Subtitle1, Subtitle2, Title1, Title2 } from "@/components/Typography";
 import { Modal } from "@/components/Modal";
 import Form from "@/components/ui/Form";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -32,6 +32,7 @@ export default function Page() {
   const [locationError, setLocationError] = useState<string>("");
   const [isShow, setIsShow] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleOpenForm = () => {
     setIsShow(false);
@@ -89,6 +90,27 @@ export default function Page() {
     setIsShow(true);
   };
 
+  const refreshLocation = () => {
+    setIsRefreshing(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          setCurrentLocation({ latitude, longitude });
+          setIsRefreshing(false);
+        },
+        function (error) {
+          setLocationError(`위치 정보 오류: ${error.message}`);
+          setIsRefreshing(false);
+        }
+      );
+    } else {
+      setLocationError("Geolocation API 지원 안 함");
+      setIsRefreshing(false);
+    }
+  };
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -127,7 +149,7 @@ export default function Page() {
       <div className="flex align-middle items-center gap-2">
         {imgUrl && (
           <Image
-            className="rounded-full"
+            className="rounded-full "
             src={imgUrl}
             alt="Profile"
             width={44}
@@ -137,12 +159,28 @@ export default function Page() {
         <Title1>{name}</Title1>
       </div>
 
-      <div className="py-4 pt-5">
-        <Title1>할매야, 놀자~!</Title1>
-        <Subtitle1>할매랑 함께 놀고 싶은 사람, 손 들어봐라~!</Subtitle1>
+      <div className="flex w-full justify-between">
+        <div className="py-6 pt-8 items-center">
+          <Title1 className="text-amber-500">할매야, 놀자~!</Title1>
+          <Subtitle1>할매랑 함께 놀고 싶은 사람, 손 들어봐라~!</Subtitle1>
+        </div>
+        <Image
+          src="/grp.PNG"
+          alt="Group icon"
+          className={`cursor-pointer -translate-y-12 ${
+            isRefreshing ? "animate-spin" : ""
+          }`}
+          width={120}
+          height={120}
+          onClick={refreshLocation}
+        />
+      </div>
+      <div className="flex w-full justify-center py-3">
+        <Title2 className="text-amber-500">N명</Title2>
+        <Title2>의 할머니가 근방에 있어요!</Title2>
       </div>
 
-      <div className="relative py-12">
+      <div className="relative rounded-3xl">
         {isShow && <SeniorInformation enableMasking={true} />}
         <GoogleMap
           address={senior1.address}
@@ -152,18 +190,6 @@ export default function Page() {
           enableMasking={true}
           onMarkerClick={handleMarkerClick}
         />
-      </div>
-      <div className="flex w-full justify-end">
-        {currentLocation ? (
-          <div>
-            현재 위치: 위도 {currentLocation.latitude.toFixed(6)}, 경도{" "}
-            {currentLocation.longitude.toFixed(6)}
-          </div>
-        ) : locationError ? (
-          <div className="text-red-500">{locationError}</div>
-        ) : (
-          <div>위치 정보를 가져오는 중...</div>
-        )}
       </div>
 
       <Modal isOpen={isFormOpen} closeModal={() => setIsFormOpen(false)}>
