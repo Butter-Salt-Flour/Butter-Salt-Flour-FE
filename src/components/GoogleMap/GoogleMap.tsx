@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Spinner } from "basic-loading";
 
@@ -28,7 +28,9 @@ const GoogleMap = ({
   const [mapLocation, setMapLocation] = useState<google.maps.LatLng | null>(
     null
   );
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const markerRef = useRef<google.maps.Marker | null>(null);
+  const circleRef = useRef<google.maps.Circle | null>(null);
 
   const option = {
     size: 40,
@@ -36,6 +38,27 @@ const GoogleMap = ({
     barColor: "#BAD5E8",
     thickness: 5,
   };
+
+  const handleMarkerClick = useCallback(() => {
+    if (mapLocation && onMarkerClick) {
+      onMarkerClick({
+        lat: mapLocation.lat(),
+        lng: mapLocation.lng(),
+      });
+    }
+  }, [mapLocation, onMarkerClick]);
+
+  const handleMapClick = useCallback(
+    (e: google.maps.MapMouseEvent) => {
+      if (e.latLng && onMapClick) {
+        onMapClick({
+          lat: e.latLng.lat(),
+          lng: e.latLng.lng(),
+        });
+      }
+    },
+    [onMapClick]
+  );
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
@@ -81,7 +104,7 @@ const GoogleMap = ({
   }, [address, latitude, longitude]);
 
   useEffect(() => {
-    if (!mapLocation || !mapRef.current) return;
+    if (!mapLocation || !mapRef.current || mapInstanceRef.current) return;
 
     const newMap = new google.maps.Map(mapRef.current, {
       center: mapLocation,
@@ -93,103 +116,90 @@ const GoogleMap = ({
               elementType: "all",
               stylers: [{ visibility: "off" }],
             },
+            {
+              featureType: "road",
+              elementType: "geometry",
+              stylers: [{ visibility: "on" }],
+            },
+            {
+              featureType: "landscape",
+              elementType: "geometry",
+              stylers: [{ visibility: "on" }],
+            },
+            {
+              featureType: "poi",
+              elementType: "geometry",
+              stylers: [{ visibility: "on" }],
+            },
+            {
+              featureType: "administrative",
+              elementType: "labels",
+              stylers: [{ visibility: "on" }],
+            },
+            {
+              featureType: "road",
+              elementType: "labels",
+              stylers: [{ visibility: "on" }],
+            },
+            {
+              featureType: "poi",
+              elementType: "labels",
+              stylers: [{ visibility: "on" }],
+            },
           ]
         : [],
     });
 
-    setMap(newMap);
+    mapInstanceRef.current = newMap;
 
-    const marker = new google.maps.Marker({
-      map: newMap,
+    if (onMapClick) {
+      newMap.addListener("click", handleMapClick);
+    }
+  }, [mapLocation, enableMasking, handleMapClick]);
+
+  useEffect(() => {
+    if (!mapLocation || !mapInstanceRef.current) return;
+
+    if (markerRef.current) {
+      markerRef.current.setMap(null);
+    }
+
+    const newMarker = new google.maps.Marker({
+      map: mapInstanceRef.current,
       position: mapLocation,
       icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 10,
-        fillColor: "#4285F4",
-        fillOpacity: 1,
-        strokeColor: "#ffffff",
-        strokeWeight: 2,
+        url: "/grp.PNG",
+        scaledSize: new google.maps.Size(70, 70),
+        anchor: new google.maps.Point(20, 40),
       },
     });
 
-    // 마커 클릭 이벤트 추가
     if (onMarkerClick) {
-      marker.addListener("click", () => {
-        onMarkerClick({
-          lat: mapLocation.lat(),
-          lng: mapLocation.lng(),
-        });
-      });
+      newMarker.addListener("click", handleMarkerClick);
     }
 
-    // 지도 클릭 이벤트 추가
-    if (onMapClick) {
-      newMap.addListener("click", (e: google.maps.MapMouseEvent) => {
-        if (e.latLng) {
-          onMapClick({
-            lat: e.latLng.lat(),
-            lng: e.latLng.lng(),
-          });
-        }
-      });
-    }
+    markerRef.current = newMarker;
 
-    // 반경 원 생성 (마스킹이 활성화된 경우에만)
     if (enableMasking) {
-      const circle = new google.maps.Circle({
-        map: newMap,
+      if (circleRef.current) {
+        circleRef.current.setMap(null);
+      }
+
+      const newCircle = new google.maps.Circle({
+        map: mapInstanceRef.current,
         center: mapLocation,
         radius: radius,
-        fillColor: "#4285F4",
-        fillOpacity: 0,
-        strokeColor: "#4285F4",
+        fillColor: "#FFB74D",
+        fillOpacity: 0.2,
+        strokeColor: "#FF9800",
         strokeOpacity: 0.8,
         strokeWeight: 2,
       });
 
-      newMap.setOptions({
-        styles: [
-          {
-            featureType: "all",
-            elementType: "all",
-            stylers: [{ visibility: "off" }],
-          },
-          {
-            featureType: "road",
-            elementType: "geometry",
-            stylers: [{ visibility: "on" }],
-          },
-          {
-            featureType: "landscape",
-            elementType: "geometry",
-            stylers: [{ visibility: "on" }],
-          },
-          {
-            featureType: "poi",
-            elementType: "geometry",
-            stylers: [{ visibility: "on" }],
-          },
-          {
-            featureType: "administrative",
-            elementType: "labels",
-            stylers: [{ visibility: "on" }],
-          },
-          {
-            featureType: "road",
-            elementType: "labels",
-            stylers: [{ visibility: "on" }],
-          },
-          {
-            featureType: "poi",
-            elementType: "labels",
-            stylers: [{ visibility: "on" }],
-          },
-        ],
-      });
-
-      newMap.fitBounds(circle.getBounds()!);
+      circleRef.current = newCircle;
+      mapInstanceRef.current.fitBounds(newCircle.getBounds()!);
     }
-  }, [mapLocation, radius, enableMasking, onMarkerClick, onMapClick]);
+  }, [mapLocation, radius, enableMasking, handleMarkerClick]);
 
   if (error) {
     return (
@@ -209,7 +219,7 @@ const GoogleMap = ({
 
   return (
     <div
-      className="min-h-[30rem] min-w-[20rem] border-gray-400 p-2 rounded relative"
+      className="min-h-[30rem] min-w-[20rem] border-gray-400 p-2 rounded-2xl shadow-xl relative"
       ref={mapRef}
     />
   );

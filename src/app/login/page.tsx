@@ -31,8 +31,9 @@ export default function LoginPage() {
       const user = result.user;
       const idToken = await user.getIdToken();
       const imgUrl = user.photoURL;
-
+      console.log(idToken);
       setAuth(idToken, user.displayName ?? '', user.email ?? '', imgUrl ?? '');
+
       router.push('/main');
     } catch (err: unknown) {
       if (err instanceof FirebaseError) {

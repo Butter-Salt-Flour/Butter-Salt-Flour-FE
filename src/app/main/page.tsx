@@ -116,6 +116,7 @@ export default function Page() {
   // 여러 할머니중에 가장 가까운 할머니
 
   return (
+
     <div className="flex flex-col w-full py-12 px-20">
       <div className="flex align-middle items-center gap-2">
         <Icon src={Ellipse} size={60} />
@@ -156,6 +157,7 @@ export default function Page() {
           <Form isShow={isFormOpen} setIsShow={setIsFormOpen} />
         </div>
       </Modal>
+
     </div>
   );
 }
