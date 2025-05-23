@@ -7,10 +7,6 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-col items-center justify-center h-screen bg-gray-50 px-4">
-      <header className="absolute top-4 left-4 text-sm text-gray-600 font-semibold">
-        할매야놀자
-      </header>
-
       <section className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
           할매야 놀자
@@ -27,7 +23,7 @@ export default function HomePage() {
         </button>
       </section>
 
-      <footer className="absolute bottom-6 text-sm text-gray-400">
+      <footer className="absolute bottom-6 text-2xl text-gray-400">
         “오늘, 할매랑 산책 어때요?”
       </footer>
     </main>
