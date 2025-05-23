@@ -29,7 +29,12 @@ const bingoItems = [
   { label: '릴스 찍기', icon: '/9.svg' },
 ];
 
-const BingoPage = () => {
+interface BingoPageProps {
+  userName?: string;
+  userAge?: number;
+}
+
+const BingoPage = ({ userName, userAge }: BingoPageProps) => {
   const [activeIndexes, setActiveIndexes] = useState<number[]>([]);
   const [completedLines, setCompletedLines] = useState<number[][]>([]);
   const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
@@ -92,8 +97,8 @@ const BingoPage = () => {
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-gray-200" />
           <div>
-            <h2 className="text-2xl font-bold">OOO 할머니</h2>
-            <p className="text-sm text-gray-500">64세 여성</p>
+            <h2 className="text-2xl font-bold">{userName ?? 'OOO'} 할머니</h2>
+            <p className="text-sm text-gray-500">{userAge ?? 64}세 여성</p>
           </div>
         </div>
         <Popover>
@@ -173,7 +178,12 @@ const BingoPage = () => {
       <div className="flex flex-col items-center justify-center mt-6">
         <button
           onClick={handleRecord}
-          className="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transition"
+          disabled={completedLines.length === 0}
+          className={`py-3 px-8 rounded-lg shadow-md transition font-bold text-white ${
+            completedLines.length === 0
+              ? 'bg-gray-300 cursor-not-allowed'
+              : 'bg-amber-500 hover:bg-amber-600'
+          }`}
         >
           빙고 제출하기
         </button>
