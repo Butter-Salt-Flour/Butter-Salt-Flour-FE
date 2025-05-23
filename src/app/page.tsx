@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/Icon';
+import { Button } from '@/components/Button';
 
 export default function HomePage() {
   const router = useRouter();
@@ -25,12 +26,13 @@ export default function HomePage() {
 
       {/* 다음 버튼 */}
       <div className="mt-10 mb-20">
-        <button
+        <Button
+          variant="yes"
+          className="bg-orange-200 hover:bg-amber-300 text-black font-semibold px-10 py-3 rounded-full shadow transition"
           onClick={() => router.push('/login')}
-          className="bg-amber-200 hover:bg-amber-300 text-black font-semibold px-10 py-3 rounded-full shadow transition"
         >
-          다음
-        </button>
+          다음{' '}
+        </Button>
       </div>
     </main>
   );
