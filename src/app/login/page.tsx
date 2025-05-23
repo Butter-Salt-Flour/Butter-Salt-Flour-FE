@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { auth } from '../../auth/firebase';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { setAuth } = useAuthStore();
 
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
@@ -18,15 +20,13 @@ export default function LoginPage() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      const idToken = await user.getIdToken();
 
       console.log('✅ 로그인 성공:', user.displayName);
-      const idToken = await user.getIdToken();
+      console.log(result);
       console.log('✅ ID Token:', idToken);
-
-      // ✅ 여기에 백엔드 토큰 전송 API 추가 가능
-
-      // ✅ 로그인 성공 시 리디렉션
-      router.push('/dashboard'); // 로그인 후 이동할 페이지
+      setAuth(idToken, user.displayName ?? '', user.email ?? '');
+      router.push('/main');
     } catch (err: any) {
       console.error('❌ 로그인 실패:', err);
       setError('로그인에 실패했습니다. 다시 시도해주세요.');
