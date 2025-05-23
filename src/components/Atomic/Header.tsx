@@ -18,7 +18,7 @@ export const Header = () => {
     }
   };
 
-  const shouldHideAuthButton = pathname === '/first' || pathname === '/login';
+  const shouldHideAuthButton = pathname === '/' || pathname === '/login';
 
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white shadow-sm">

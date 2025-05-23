@@ -1,31 +1,37 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { Icon } from '@/components/Icon';
 
 export default function HomePage() {
   const router = useRouter();
 
   return (
-    <main className="flex flex-col items-center justify-center h-screen bg-gray-50 px-4">
-      <section className="text-center space-y-4">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-          할매야 놀자
-        </h1>
-        <p className="text-gray-600 text-base md:text-lg max-w-md">
-          고립된 할머니와, 연결이 필요한 청년을 위한 따뜻한 하루 챌린지
+    <main className="flex flex-col items-center justify-between h-screen bg-gradient-to-b from-orange-400 to-orange-50 px-4 py-10">
+      {/* 헤더 타이틀 */}
+      <section className="text-center space-y-3 mt-10">
+        <div className="relative left-16">
+          <Icon src="/title.svg" size={500}></Icon>
+        </div>
+        <p className="text-white font-bold md:text-4xl mt-12">
+          지역사회 활성화를 위한 노인과 청년의 연결고리
         </p>
-
-        <button
-          onClick={() => router.push('/login')}
-          className="mt-4 px-6 py-2 rounded bg-black text-white hover:bg-gray-800 transition"
-        >
-          로그인하기
-        </button>
       </section>
 
-      <footer className="absolute bottom-6 text-2xl text-gray-400">
-        “오늘, 할매랑 산책 어때요?”
-      </footer>
+      {/* 캐릭터 일러스트 (SVG 파일 경로로 삽입) */}
+      <div className="absolute bottom-0 right-90">
+        <Icon src="/granma.svg" size={280} />
+      </div>
+
+      {/* 다음 버튼 */}
+      <div className="mt-10 mb-20">
+        <button
+          onClick={() => router.push('/login')}
+          className="bg-amber-200 hover:bg-amber-300 text-black font-semibold px-10 py-3 rounded-full shadow transition"
+        >
+          다음
+        </button>
+      </div>
     </main>
   );
 }
