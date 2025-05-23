@@ -1,7 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+module.exports = {
+  images: {
+    domains: ["lh3.googleusercontent.com"], // Allow the Google domain for image loading
+  },
 };
-
-export default nextConfig;
