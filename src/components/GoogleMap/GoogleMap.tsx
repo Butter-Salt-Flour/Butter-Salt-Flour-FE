@@ -3,7 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { Spinner } from "basic-loading";
 
-const GoogleMap = ({ address }: { address: string }) => {
+type GoogleMapProps = {
+  address?: string;
+  lat?: number;
+  lng?: number;
+};
+
+const GoogleMap = ({ address, lat, lng }: GoogleMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,26 +39,33 @@ const GoogleMap = ({ address }: { address: string }) => {
     loader
       .load()
       .then(() => {
-        const geocoder = new google.maps.Geocoder();
-
-        geocoder.geocode({ address: address }, (results, status) => {
-          if (results) {
-            if (status === "OK") {
+        if (lat && lng) {
+          // Use the latitude and longitude directly
+          setMapLocation(new google.maps.LatLng(lat, lng));
+          setIsLoading(false);
+        } else if (address) {
+          // Use the address to get latitude and longitude
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ address: address }, (results, status) => {
+            if (results && status === "OK") {
               setMapLocation(results[0].geometry.location);
               setIsLoading(false);
             } else {
               setError(`주소를 찾을 수 없습니다: ${status}`);
               setIsLoading(false);
             }
-          }
-        });
+          });
+        } else {
+          setError("위도/경도 또는 주소를 제공해야 합니다.");
+          setIsLoading(false);
+        }
       })
       .catch((err) => {
         setError("Google Maps 로딩 중 오류가 발생했습니다.");
         setIsLoading(false);
         console.error(err);
       });
-  }, [address]);
+  }, [address, lat, lng]);
 
   useEffect(() => {
     if (!mapLocation || !mapRef.current) return;
@@ -70,7 +83,7 @@ const GoogleMap = ({ address }: { address: string }) => {
 
   if (error) {
     return (
-      <div className="min-h-[20rem] minh-w-[60rem] border border-red-400 p-4 rounded text-red-500">
+      <div className="min-h-[20rem] min-w-[60rem] border border-red-400 p-4 rounded text-red-500">
         {error}
       </div>
     );
