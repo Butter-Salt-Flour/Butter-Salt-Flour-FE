@@ -1,13 +1,23 @@
 import { Caption1, Title3, Title1 } from "@/components/Typography";
 import { InputField } from "@/components/Input/Index";
 import { Button } from "@/components/Button";
+import { requestMatching } from "@/lib/apis/main";
 
 interface HomeProps {
   isShow: boolean;
   setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
+  seniorId: number;
 }
 
-export default function Form({ isShow, setIsShow }: HomeProps) {
+export default function Form({ isShow, setIsShow, seniorId }: HomeProps) {
+  const handleSubmit = async () => {
+    try {
+      await requestMatching({ seniorId, youthId: 1 });
+    } catch (error) {
+      console.error("매칭 신청 실패:", error);
+    }
+  };
+
   return (
     <div className="rounded-2xl flex justify-center text-2xl w-full">
       {isShow && (
@@ -56,7 +66,12 @@ export default function Form({ isShow, setIsShow }: HomeProps) {
             >
               취소
             </Button>
-            <Button variant="yes" size="lg" className="px-12 font-semibold">
+            <Button
+              variant="yes"
+              size="lg"
+              className="px-12 font-semibold"
+              onClick={handleSubmit}
+            >
               챌린지 시작하기
             </Button>
           </div>

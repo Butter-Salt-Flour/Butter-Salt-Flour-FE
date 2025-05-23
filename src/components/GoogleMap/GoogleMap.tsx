@@ -51,10 +51,7 @@ const GoogleMap = ({
   const handleMapClick = useCallback(
     (e: google.maps.MapMouseEvent) => {
       if (e.latLng && onMapClick) {
-        onMapClick({
-          lat: e.latLng.lat(),
-          lng: e.latLng.lng(),
-        });
+        onMapClick({ lat: e.latLng.lat(), lng: e.latLng.lng() });
       }
     },
     [onMapClick]
@@ -200,6 +197,23 @@ const GoogleMap = ({
       mapInstanceRef.current.fitBounds(newCircle.getBounds()!);
     }
   }, [mapLocation, radius, enableMasking, handleMarkerClick]);
+
+  // Effect to clear map instance and markers on unmount
+  useEffect(() => {
+    const marker = markerRef.current;
+    const circle = circleRef.current;
+
+    return () => {
+      if (marker) {
+        marker.setMap(null);
+        markerRef.current = null;
+      }
+      if (circle) {
+        circle.setMap(null);
+        circleRef.current = null;
+      }
+    };
+  }, []);
 
   if (error) {
     return (
