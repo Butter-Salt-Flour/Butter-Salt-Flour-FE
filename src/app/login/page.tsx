@@ -112,6 +112,9 @@ export default function LoginPage() {
           <div className="absolute bottom-[15%] right-[10%] animate-bubble3 text-m bg-white rounded-full shadow px-8 py-6">
             오랜만에 젊은 사람들을 보는 것 같아요.
           </div>
+          <div className="absolute bottom-[15%] left-[5%] animate-bubble3 text-m bg-white rounded-full shadow px-8 py-6">
+            오랜만에 돈 좀 썼지만, 너무 값진 경험이었어요.
+          </div>
         </div>
       )}
 
