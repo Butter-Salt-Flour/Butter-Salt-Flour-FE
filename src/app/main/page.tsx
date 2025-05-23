@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import GoogleMap from "@/components/GoogleMap/GoogleMap";
 import { Button } from "@/components/Button";
 import { Ellipse } from "@/assets/Icons";
@@ -7,6 +8,7 @@ import { Icon } from "@/components/Icon";
 import { Subtitle1, Subtitle2, Title1 } from "@/components/Typography";
 import { Modal } from "@/components/Modal";
 import Form from "@/components/ui/Form";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface SeniorProfile {
   senior_id: string;
@@ -22,6 +24,7 @@ interface SeniorProfile {
 }
 
 export default function Page() {
+  const { imgUrl, name } = useAuthStore();
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -59,19 +62,23 @@ export default function Page() {
             </>
           )} */}
 
-          <div className="flex whitespace-nowrap w-full py-2 justify-evenly">
+          <div className="flex whitespace-nowrap w-full py-2 justify-evenly gap-2">
             <Button
-              label="아니요"
-              variant="secondary"
+              variant="no"
+              size="md"
               onClick={() => setIsShow(false)}
-              size="sm"
-            />
+              className="px-5 font-semibold"
+            >
+              아니요
+            </Button>
             <Button
-              label="할래요!"
-              variant="primary"
-              size="sm"
+              variant="yes"
+              size="md"
+              className="px-12 font-semibold"
               onClick={handleOpenForm}
-            />
+            >
+              할래요!
+            </Button>
           </div>
         </div>
       </div>
@@ -116,16 +123,23 @@ export default function Page() {
   // 여러 할머니중에 가장 가까운 할머니
 
   return (
-
     <div className="flex flex-col w-full py-12 px-20">
       <div className="flex align-middle items-center gap-2">
-        <Icon src={Ellipse} size={60} />
-        <Title1>프로필</Title1>
+        {imgUrl && (
+          <Image
+            className="rounded-full"
+            src={imgUrl}
+            alt="Profile"
+            width={44}
+            height={44}
+          />
+        )}
+        <Title1>{name}</Title1>
       </div>
 
       <div className="py-4">
-        <Title1>할매야놀자~!</Title1>
-        <Subtitle1>함께하고 싶은 할머니를 선택해주세요!</Subtitle1>
+        <Title1>할매야, 놀자~!</Title1>
+        <Subtitle1>할매랑 함께 놀고 싶은 사람, 손 들어봐라~!</Subtitle1>
       </div>
 
       <div className="relative">
@@ -157,7 +171,6 @@ export default function Page() {
           <Form isShow={isFormOpen} setIsShow={setIsFormOpen} />
         </div>
       </Modal>
-
     </div>
   );
 }
