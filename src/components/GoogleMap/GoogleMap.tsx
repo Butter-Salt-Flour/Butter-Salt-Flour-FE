@@ -19,6 +19,8 @@ const GoogleMap = ({
   longitude,
   radius = 2000,
   enableMasking = false,
+  onMarkerClick,
+  onMapClick,
 }: GoogleMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +28,7 @@ const GoogleMap = ({
   const [mapLocation, setMapLocation] = useState<google.maps.LatLng | null>(
     null
   );
+  const [map, setMap] = useState<google.maps.Map | null>(null);
 
   const option = {
     size: 40,
@@ -94,19 +97,40 @@ const GoogleMap = ({
         : [],
     });
 
-    // 마스킹이 비활성화된 경우에만 마커 표시
-    if (!enableMasking) {
-      new google.maps.Marker({
-        map: newMap,
-        position: mapLocation,
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: "#4285F4",
-          fillOpacity: 1,
-          strokeColor: "#ffffff",
-          strokeWeight: 2,
-        },
+    setMap(newMap);
+
+    const marker = new google.maps.Marker({
+      map: newMap,
+      position: mapLocation,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 10,
+        fillColor: "#4285F4",
+        fillOpacity: 1,
+        strokeColor: "#ffffff",
+        strokeWeight: 2,
+      },
+    });
+
+    // 마커 클릭 이벤트 추가
+    if (onMarkerClick) {
+      marker.addListener("click", () => {
+        onMarkerClick({
+          lat: mapLocation.lat(),
+          lng: mapLocation.lng(),
+        });
+      });
+    }
+
+    // 지도 클릭 이벤트 추가
+    if (onMapClick) {
+      newMap.addListener("click", (e: google.maps.MapMouseEvent) => {
+        if (e.latLng) {
+          onMapClick({
+            lat: e.latLng.lat(),
+            lng: e.latLng.lng(),
+          });
+        }
       });
     }
 
@@ -123,7 +147,6 @@ const GoogleMap = ({
         strokeWeight: 2,
       });
 
-      // 지도 스타일 재설정 (원 안쪽만 보이도록)
       newMap.setOptions({
         styles: [
           {
@@ -164,10 +187,9 @@ const GoogleMap = ({
         ],
       });
 
-      // 지도 범위를 원에 맞게 조정
       newMap.fitBounds(circle.getBounds()!);
     }
-  }, [mapLocation, radius, enableMasking]);
+  }, [mapLocation, radius, enableMasking, onMarkerClick, onMapClick]);
 
   if (error) {
     return (
