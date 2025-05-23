@@ -78,7 +78,7 @@ const GoogleMap = ({ address }: { address: string }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-[20rem] border-gray-400 p-4 rounded flex justify-center items-center">
+      <div className="min-h-[20rem] border-gray-400 p-3 rounded flex justify-center items-center">
         <Spinner option={option} />
       </div>
     );

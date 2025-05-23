@@ -21,7 +21,7 @@ type Story = StoryObj<typeof GoogleMap>;
 
 export const Seoul: Story = {
   args: {
-    address: "서울특별시 강남구 테헤란로 123",
+    address: "서울특별시 강남구 테헤란로 122",
   },
 };
 
