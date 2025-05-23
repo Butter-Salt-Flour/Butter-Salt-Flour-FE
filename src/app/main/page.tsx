@@ -29,10 +29,8 @@ export default function Page() {
     latitude: number;
     longitude: number;
   } | null>(null);
-  const [locationError, setLocationError] = useState<string>("");
   const [isShow, setIsShow] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleOpenForm = () => {
     setIsShow(false);
@@ -90,27 +88,6 @@ export default function Page() {
     setIsShow(true);
   };
 
-  const refreshLocation = () => {
-    setIsRefreshing(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          setCurrentLocation({ latitude, longitude });
-          setIsRefreshing(false);
-        },
-        function (error) {
-          setLocationError(`위치 정보 오류: ${error.message}`);
-          setIsRefreshing(false);
-        }
-      );
-    } else {
-      setLocationError("Geolocation API 지원 안 함");
-      setIsRefreshing(false);
-    }
-  };
-
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -118,16 +95,16 @@ export default function Page() {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
           setCurrentLocation({ latitude, longitude });
+          setCurrentLocation({ latitude, longitude });
         },
         function (error) {
-          setLocationError(`위치 정보 오류: ${error.message}`);
+          console.error(`위치 정보 오류: ${error.message}`);
         }
       );
     } else {
-      setLocationError("Geolocation API 지원 안 함");
+      console.error("Geolocation API 지원 안 함");
     }
   }, []);
-
   const senior1: SeniorProfile = {
     senior_id: "12345",
     name: "김말숙",
@@ -146,11 +123,11 @@ export default function Page() {
 
   return (
     <div className="flex flex-col w-full py-12 px-20">
-      <div className="flex align-middle items-center gap-2">
+      <div className="flex align-middle items-center gap-2 py-4">
         {imgUrl && (
           <Image
-            className="rounded-full "
-            src={imgUrl}
+            className="rounded-full"
+            src="/손녀.png"
             alt="Profile"
             width={44}
             height={44}
@@ -159,25 +136,18 @@ export default function Page() {
         <Title1>{name}</Title1>
       </div>
 
-      <div className="flex w-full justify-between">
-        <div className="py-6 pt-8 items-center">
-          <Title1 className="text-amber-500">할매야, 놀자~!</Title1>
-          <Subtitle1>할매랑 함께 놀고 싶은 사람, 손 들어봐라~!</Subtitle1>
+      <div className="py-6 pt-8 items-center w-full justify-center flex flex-col bg-amber-50">
+        <Title1 className="text-amber-500 text-center pb-1">
+          할매야, 놀자~!
+        </Title1>
+        <Subtitle1 className="text-gray-400 text-center">
+          할매랑 함께 놀고 싶은 사람, 손 들어봐라~!
+        </Subtitle1>
+
+        <div className="flex w-full justify-center pt-5">
+          <Title2 className="text-amber-500">3명</Title2>
+          <Title2>의 할머니가 근방에 있어요!</Title2>
         </div>
-        <Image
-          src="/grp.PNG"
-          alt="Group icon"
-          className={`cursor-pointer -translate-y-12 ${
-            isRefreshing ? "animate-spin" : ""
-          }`}
-          width={120}
-          height={120}
-          onClick={refreshLocation}
-        />
-      </div>
-      <div className="flex w-full justify-center py-3">
-        <Title2 className="text-amber-500">N명</Title2>
-        <Title2>의 할머니가 근방에 있어요!</Title2>
       </div>
 
       <div className="relative rounded-3xl">
