@@ -1,5 +1,5 @@
 'use client';
-
+import { FirebaseError } from 'firebase/app';
 import React, { useState } from 'react';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -10,6 +10,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
   const { setAuth } = useAuthStore();
 
   const loginWithGoogle = async () => {
@@ -21,15 +22,21 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const idToken = await user.getIdToken();
-
+      const imgUrl = user.photoURL;
       console.log('✅ 로그인 성공:', user.displayName);
       console.log(result);
       console.log('✅ ID Token:', idToken);
-      setAuth(idToken, user.displayName ?? '', user.email ?? '');
+
+      setAuth(idToken, user.displayName ?? '', user.email ?? '', imgUrl ?? '');
       router.push('/main');
-    } catch (err: any) {
-      console.error('❌ 로그인 실패:', err);
-      setError('로그인에 실패했습니다. 다시 시도해주세요.');
+    } catch (err: unknown) {
+      if (err instanceof FirebaseError) {
+        console.error('Firebase 에러:', err.code, err.message);
+        setError('로그인에 실패했습니다: ' + err.message);
+      } else {
+        console.error(' 알 수 없는 에러:', err);
+        setError('알 수 없는 오류가 발생했습니다.');
+      }
     } finally {
       setLoading(false);
     }
