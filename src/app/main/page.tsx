@@ -3,7 +3,7 @@ import { Button } from '@/components/Button';
 const page = () => {
   return (
     <div>
-      <Button label='버튼입니다'></Button>
+      <Button variant="primary">gd</Button>
     </div>
   );
 };

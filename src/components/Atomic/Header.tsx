@@ -1,12 +1,11 @@
 'use client';
-
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import toast from 'react-hot-toast';
 
 export const Header = () => {
   const router = useRouter();
-  const pathname = usePathname(); // ✅ 현재 경로 가져오기
+  const pathname = usePathname();
   const { isLoggedIn, logout } = useAuthStore();
 
   const handleAuth = () => {
