@@ -7,9 +7,19 @@ interface GoogleMapProps {
   address?: string;
   latitude?: number;
   longitude?: number;
+  radius?: number;
+  enableMasking?: boolean;
+  onMarkerClick?: (position: { lat: number; lng: number }) => void;
+  onMapClick?: (position: { lat: number; lng: number }) => void;
 }
 
-const GoogleMap = ({ address, latitude, longitude }: GoogleMapProps) => {
+const GoogleMap = ({
+  address,
+  latitude,
+  longitude,
+  radius = 2000,
+  enableMasking = false,
+}: GoogleMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,16 +80,94 @@ const GoogleMap = ({ address, latitude, longitude }: GoogleMapProps) => {
   useEffect(() => {
     if (!mapLocation || !mapRef.current) return;
 
-    const map = new google.maps.Map(mapRef.current, {
+    const newMap = new google.maps.Map(mapRef.current, {
       center: mapLocation,
       zoom: 13,
+      styles: enableMasking
+        ? [
+            {
+              featureType: "all",
+              elementType: "all",
+              stylers: [{ visibility: "off" }],
+            },
+          ]
+        : [],
     });
 
-    new google.maps.Marker({
-      map: map,
-      position: mapLocation,
-    });
-  }, [mapLocation]);
+    // 마스킹이 비활성화된 경우에만 마커 표시
+    if (!enableMasking) {
+      new google.maps.Marker({
+        map: newMap,
+        position: mapLocation,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: "#4285F4",
+          fillOpacity: 1,
+          strokeColor: "#ffffff",
+          strokeWeight: 2,
+        },
+      });
+    }
+
+    // 반경 원 생성 (마스킹이 활성화된 경우에만)
+    if (enableMasking) {
+      const circle = new google.maps.Circle({
+        map: newMap,
+        center: mapLocation,
+        radius: radius,
+        fillColor: "#4285F4",
+        fillOpacity: 0,
+        strokeColor: "#4285F4",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+      });
+
+      // 지도 스타일 재설정 (원 안쪽만 보이도록)
+      newMap.setOptions({
+        styles: [
+          {
+            featureType: "all",
+            elementType: "all",
+            stylers: [{ visibility: "off" }],
+          },
+          {
+            featureType: "road",
+            elementType: "geometry",
+            stylers: [{ visibility: "on" }],
+          },
+          {
+            featureType: "landscape",
+            elementType: "geometry",
+            stylers: [{ visibility: "on" }],
+          },
+          {
+            featureType: "poi",
+            elementType: "geometry",
+            stylers: [{ visibility: "on" }],
+          },
+          {
+            featureType: "administrative",
+            elementType: "labels",
+            stylers: [{ visibility: "on" }],
+          },
+          {
+            featureType: "road",
+            elementType: "labels",
+            stylers: [{ visibility: "on" }],
+          },
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "on" }],
+          },
+        ],
+      });
+
+      // 지도 범위를 원에 맞게 조정
+      newMap.fitBounds(circle.getBounds()!);
+    }
+  }, [mapLocation, radius, enableMasking]);
 
   if (error) {
     return (
@@ -99,7 +187,7 @@ const GoogleMap = ({ address, latitude, longitude }: GoogleMapProps) => {
 
   return (
     <div
-      className="min-h-[30rem] min-w-[20rem] border-gray-400 p-2 rounded"
+      className="min-h-[30rem] min-w-[20rem] border-gray-400 p-2 rounded relative"
       ref={mapRef}
     />
   );
