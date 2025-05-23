@@ -1,44 +1,80 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import GoogleMap from "./GoogleMap";
 
-const meta: Meta<typeof GoogleMap> = {
-  title: "Components/common/GoogleMap",
+const meta = {
+  title: "Components/GoogleMap",
   component: GoogleMap,
   parameters: {
     layout: "centered",
   },
   tags: ["autodocs"],
   argTypes: {
-    address: {
-      description: "지도에 표시할 주소",
-      control: "text",
+    radius: {
+      description: "현재 위치로부터의 반경 (미터 단위)",
+      control: { type: "range", min: 500, max: 5000, step: 500 },
+    },
+    enableMasking: {
+      description: "반경 마스킹 활성화 여부",
+      control: "boolean",
     },
   },
-};
+} satisfies Meta<typeof GoogleMap>;
 
 export default meta;
-type Story = StoryObj<typeof GoogleMap>;
+type Story = StoryObj<typeof meta>;
 
-export const Seoul: Story = {
+export const WithAddress: Story = {
   args: {
     address: "서울특별시 강남구 테헤란로 122",
+    radius: 2000,
+    enableMasking: false,
   },
 };
 
-export const Busan: Story = {
+export const WithCoordinates: Story = {
   args: {
-    address: "부산광역시 해운대구 해운대해변로 123",
+    latitude: 37.5665,
+    longitude: 126.978,
+    radius: 2000,
+    enableMasking: false,
   },
 };
 
-export const Jeju: Story = {
+export const WithMasking: Story = {
   args: {
-    address: "제주특별자치도 제주시 첨단로 123",
+    latitude: 37.5665,
+    longitude: 126.978,
+    radius: 2000,
+    enableMasking: true,
   },
 };
 
-export const InvalidAddress: Story = {
+export const SmallRadiusWithMasking: Story = {
   args: {
-    address: "존재하지 않는 주소 123",
+    latitude: 37.5665,
+    longitude: 126.978,
+    radius: 1000,
+    enableMasking: true,
+  },
+};
+
+export const LargeRadiusWithMasking: Story = {
+  args: {
+    latitude: 37.5665,
+    longitude: 126.978,
+    radius: 3000,
+    enableMasking: true,
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    address: "",
+  },
+};
+
+export const Error: Story = {
+  args: {
+    address: "Invalid Address",
   },
 };
