@@ -34,8 +34,8 @@ const GoogleMap = ({
 
   const option = {
     size: 40,
-    bgColor: "#3B82F6",
-    barColor: "#BAD5E8",
+    bgColor: "#FFD700",
+    barColor: "#FFB74D",
     thickness: 5,
   };
 
@@ -169,7 +169,7 @@ const GoogleMap = ({
       position: mapLocation,
       icon: {
         url: "/grp.PNG",
-        scaledSize: new google.maps.Size(70, 70),
+        scaledSize: new google.maps.Size(70, 75),
         anchor: new google.maps.Point(20, 40),
       },
     });
