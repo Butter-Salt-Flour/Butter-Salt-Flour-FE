@@ -3,7 +3,16 @@
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@/components/Icon';
 import { Modal } from '@/components/Modal';
-import { Button } from '@/components/Button'; // 버튼 컴포넌트 사용 시 필요
+import { Button } from '@/components/Button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 const bingoItems = [
   '전화로 안부인사 드리기',
@@ -21,8 +30,8 @@ const BingoPage = () => {
   const [completedRows, setCompletedRows] = useState<number[]>([]);
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [isVolunteerModalOpen, setIsVolunteerModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>();
 
-  // ✅ 빙고 완료 모달 (3줄 이상)
   useEffect(() => {
     setTimeout(() => {
       const dummyRows = [1, 2, 3];
@@ -33,7 +42,6 @@ const BingoPage = () => {
     }, 1000);
   }, []);
 
-  // ✅ 봉사시간 신청 모달
   useEffect(() => {
     setTimeout(() => {
       setIsVolunteerModalOpen(true);
@@ -42,7 +50,6 @@ const BingoPage = () => {
 
   return (
     <main className="p-6 max-w-7xl mx-auto">
-      {/* 프로필 영역 */}
       <section className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-gray-200" />
@@ -51,11 +58,25 @@ const BingoPage = () => {
             <p className="text-sm text-gray-500">64세 여성</p>
           </div>
         </div>
-        <button className="flex text-xl text-gray-400 hover:text-gray-600">
-          챌린지 기간 설정하기
-          <span className="mr-3" />
-          <Icon src="/date.svg" name="calendar" size={24} />
-        </button>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="flex items-center gap-2 text-sm text-gray-500 hover:text-black border border-gray-300 rounded-md px-4 py-2">
+              <CalendarIcon className="w-4 h-4" />
+              {selectedDate
+                ? format(selectedDate, 'PPP', { locale: ko })
+                : '챌린지 기간 설정하기'}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="end">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
       </section>
 
       {/* 배너 */}
@@ -87,7 +108,7 @@ const BingoPage = () => {
         ))}
       </section>
 
-      {/* ✅ 1. 빙고 완성 모달 */}
+      {/* 1. 빙고 완성 모달 */}
       <Modal
         isOpen={isCompleteModalOpen}
         closeModal={() => setIsCompleteModalOpen(false)}
@@ -103,7 +124,6 @@ const BingoPage = () => {
         </div>
       </Modal>
 
-      {/* ✅ 2. 봉사시간 신청 모달 */}
       <Modal
         isOpen={isVolunteerModalOpen}
         closeModal={() => setIsVolunteerModalOpen(false)}
