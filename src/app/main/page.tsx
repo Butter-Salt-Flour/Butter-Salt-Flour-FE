@@ -9,6 +9,7 @@ import { Modal } from "@/components/Modal";
 import Form from "@/components/ui/Form";
 import { useAuthStore } from "@/store/useAuthStore";
 import { fetchAllSeniors } from "@/lib/apis/main";
+import { useRouter } from "next/navigation";
 
 interface SeniorProfile {
   seniorId: number;
@@ -24,6 +25,7 @@ interface SeniorProfile {
 }
 
 export default function Page() {
+  const router = useRouter();
   const { imgUrl, name } = useAuthStore();
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number;
@@ -156,17 +158,27 @@ export default function Page() {
 
   return (
     <div className="flex flex-col w-full py-12 px-20">
-      <div className="flex align-middle items-center gap-3 py-4">
-        {imgUrl && (
-          <Image
-            className="rounded-full"
-            src="/손녀.png"
-            alt="Profile"
-            width={60}
-            height={60}
-          />
-        )}
-        <Title1>{name}</Title1>
+      <div className="flex align-middle items-center justify-between">
+        <div className="flex align-middle items-center gap-3 py-4">
+          {imgUrl && (
+            <Image
+              className="rounded-full"
+              src="/손녀.png"
+              alt="Profile"
+              width={60}
+              height={60}
+            />
+          )}
+          <Title1>{name}</Title1>
+        </div>
+
+        <Button
+          variant="yes"
+          className="font-semibold h-12 "
+          onClick={() => router.push("/myPage")}
+        >
+          마이페이지
+        </Button>
       </div>
 
       <div className="py-6 pt-8 items-center w-full justify-center flex flex-col bg-amber-50">
@@ -198,7 +210,11 @@ export default function Page() {
 
       <Modal isOpen={isFormOpen} closeModal={() => setIsFormOpen(false)}>
         <div className="p-6">
-          <Form isShow={isFormOpen} setIsShow={setIsFormOpen} />
+          <Form
+            isShow={isFormOpen}
+            setIsShow={setIsFormOpen}
+            seniorId={closestSenior?.seniorId ?? 0}
+          />
         </div>
       </Modal>
     </div>
