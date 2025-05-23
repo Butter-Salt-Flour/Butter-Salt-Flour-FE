@@ -40,8 +40,8 @@ export default function Page() {
 
   const SeniorInformation = ({}: { enableMasking: boolean }) => {
     return (
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-        <div className="flex flex-col gap-2 z-20  w-fit bg-white rounded-3xl justify-center p-5 px-6">
+      <div className="absolute top-1/2 left-2/6 transform -translate-x-1/2 -translate-y-1/2 z-50 transition-all duration-500 ease-in-out opacity-100 translate-y-0">
+        <div className="flex flex-col gap-2 z-20 shadow w-fit bg-white rounded-3xl justify-center p-5 px-6">
           <div className="flex gap-4 items-center">
             <Icon src={Ellipse} size={60} />
             <div>
@@ -114,7 +114,7 @@ export default function Page() {
     address: "서울특별시 강남구 테헤란로 122",
     age: 91,
     profileImage: "https://example.com/images/김말숙.jpg",
-    description: "난 아직도 어리다... 🌸.",
+    description: "난 아직도 어리다... 👵🏻",
     latitude: "37.54419744589",
     longtitude: "126.95121385337",
   };
@@ -137,12 +137,12 @@ export default function Page() {
         <Title1>{name}</Title1>
       </div>
 
-      <div className="py-4">
+      <div className="py-4 pt-5">
         <Title1>할매야, 놀자~!</Title1>
         <Subtitle1>할매랑 함께 놀고 싶은 사람, 손 들어봐라~!</Subtitle1>
       </div>
 
-      <div className="relative">
+      <div className="relative py-12">
         {isShow && <SeniorInformation enableMasking={true} />}
         <GoogleMap
           address={senior1.address}
