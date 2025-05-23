@@ -16,14 +16,14 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import toast from "react-hot-toast";
-import { Caption1, Title1 } from "@/components/Typography";
+import { Caption1, Subtitle1, Title3, Title1 } from "@/components/Typography";
 import Image from "next/image";
 const bingoItems = [
   { label: "전화로 안부인사 드리기", icon: "/1.svg" },
   { label: "30분 이상 산책하기", icon: "/2.svg" },
   { label: "함께 식사하기", icon: "/3.svg" },
   { label: "MBTI 검사하기", icon: "/4.svg" },
-  { label: "오늘 고마웠던 순간 웹에 올리기", icon: "/5.svg" },
+  { label: "고마웠던 순간 올리기", icon: "/5.svg" },
   { label: "지역행사 참여하기", icon: "/6.svg" },
   { label: "청소 도와드리기", icon: "/7.svg" },
   { label: "디지털 앨범 만들기", icon: "/8.svg" },
@@ -65,7 +65,15 @@ const BingoPage = ({ userName, userAge }: BingoPageProps) => {
     if (newCompleted.length > 0) {
       setCompletedLines((prev) => [...prev, ...newCompleted]);
       setTimeout(() => setIsCompleteModalOpen(true), 500);
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      confetti({
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ["#FFA500", "#FF8C00", "#FFD700", "#FFB700"],
+        shapes: ["circle", "square"],
+        gravity: 0.8,
+        scalar: 1.2,
+      });
     }
   }, [activeIndexes]);
 
@@ -96,7 +104,7 @@ const BingoPage = ({ userName, userAge }: BingoPageProps) => {
     <main className="p-6 max-w-7xl mx-auto">
       <section className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gray-200" />
+          <Image src={"/grp.PNG"} width={50} height={50} />
           <div>
             <h2 className="text-2xl font-bold">{"김옥순" ?? "OOO"} 할머니</h2>
             <p className="text-sm text-gray-500">{userAge ?? 64}세 여성</p>
@@ -143,15 +151,21 @@ const BingoPage = ({ userName, userAge }: BingoPageProps) => {
                 relative flex flex-col items-center justify-center text-center rounded-xl p-6 min-h-[220px] transition cursor-default
                 ${
                   isCompleted
-                    ? "bg-green-100 border-4 border-green-500 text-green-900 font-bold line-through"
+                    ? "bg-orange-100 border-4 border-orange-300 text-orange-900 font-bold line-through"
                     : isActive
                     ? "border-2 border-amber-500 bg-white font-bold text-black"
                     : "border border-amber-300 bg-white text-gray-800"
                 }
               `}
             >
-              <img src={item.icon} alt="" className="w-8 h-8 mb-2" />
-              <p className="mb-2">{item.label}</p>
+              <img
+                src={item.icon}
+                alt=""
+                className="w-30 h-30 mb-2 translate-x-20 -translate-y-2"
+              />
+              <Title3 className="mb-2 -translate-x-16 translate-y-2">
+                {item.label}
+              </Title3>
               <input
                 type="file"
                 id={`file-upload-${i}`}
