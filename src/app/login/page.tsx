@@ -46,32 +46,55 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col justify-between items-center h-screen bg-white px-6 py-12">
+    <div className="flex flex-col items-center justify-between h-screen bg-white px-6 py-12">
       <div className="flex-1 flex items-center justify-center">
         {showText && (
-          <h2
-            style={{
-              opacity: 0,
-              animation: 'fadeInUp 2s ease-out forwards',
-            }}
-            className="text-5xl leading-relaxed font-semibold text-center text-gray-900"
-          >
-            오늘, 할머님들과
-            <br />
-            따뜻한 하루를 함께할까요?
-          </h2>
+          <div className="flex flex-col items-center justify-center">
+            <h2
+              style={{
+                opacity: 0,
+                animation: 'fadeInUp 2s ease-out forwards',
+              }}
+              className="text-5xl mb-20 leading-relaxed font-semibold text-center text-gray-900"
+            >
+              오늘, 할머님들과
+              <br />
+              따뜻한 하루를 함께할까요?
+            </h2>
+
+            <button
+              onClick={loginWithGoogle}
+              disabled={loading}
+              className="w-20 h-20 mt-15 p-5 flex items-center justify-center rounded-full shadow-lg border border-gray-300 hover:scale-110 hover:shadow-xl transition duration-200 disabled:opacity-50 bg-white"
+              style={{
+                opacity: 0,
+                animation: 'fadeInUp 1s ease-out forwards',
+                animationDelay: '0.4s',
+              }}
+              aria-label="Google 로그인"
+            >
+              <img
+                src="https://developers.google.com/identity/images/g-logo.png"
+                alt="Google logo"
+                className="w-10 h-10" // 더 큼직하게
+              />
+            </button>
+
+            <span
+              className="text-gray-400 text-sm mt-5"
+              style={{
+                opacity: 0,
+                animation: 'fadeInUp 1s ease-out forwards',
+                animationDelay: '0.4s',
+              }}
+            >
+              Google로 로그인하기
+            </span>
+          </div>
         )}
       </div>
 
       <div className="w-full">
-        <button
-          onClick={loginWithGoogle}
-          disabled={loading}
-          className="w-full bg-black text-white text-base py-4 rounded-xl shadow hover:bg-gray-800 transition disabled:opacity-50"
-        >
-          {loading ? '로그인 중...' : 'Google 계정으로 로그인'}
-        </button>
-
         {error && (
           <p className="text-sm text-red-500 mt-4 text-center">{error}</p>
         )}
