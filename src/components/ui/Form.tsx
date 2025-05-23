@@ -2,6 +2,7 @@ import { Caption1, Title3, Title1 } from "@/components/Typography";
 import { InputField } from "@/components/Input/Index";
 import { Button } from "@/components/Button";
 import { requestMatching } from "@/lib/apis/main";
+import { useRouter } from "next/navigation";
 
 interface HomeProps {
   isShow: boolean;
@@ -10,12 +11,15 @@ interface HomeProps {
 }
 
 export default function Form({ isShow, setIsShow, seniorId }: HomeProps) {
+  const router = useRouter();
+
   const handleSubmit = async () => {
     try {
       await requestMatching({ seniorId, youthId: 1 });
     } catch (error) {
       console.error("매칭 신청 실패:", error);
     }
+    router.push("/bingo");
   };
 
   return (

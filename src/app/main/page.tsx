@@ -10,6 +10,7 @@ import Form from "@/components/ui/Form";
 import { useAuthStore } from "@/store/useAuthStore";
 import { fetchAllSeniors } from "@/lib/apis/main";
 import { useRouter } from "next/navigation";
+import confetti from "canvas-confetti";
 
 interface SeniorProfile {
   seniorId: number;
@@ -37,6 +38,7 @@ export default function Page() {
   const [closestSenior, setClosestSenior] = useState<SeniorProfile | null>(
     null
   );
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
 
   const handleOpenForm = () => {
     setIsShow(false);
@@ -200,8 +202,8 @@ export default function Page() {
         <GoogleMap
           key={closestSenior?.seniorId}
           address={closestSenior?.address}
-          latitude={closestSenior?.latitude}
-          longitude={closestSenior?.longitude}
+          latitude={closestSenior?.latitude ?? 0}
+          longitude={closestSenior?.longitude ?? 0}
           radius={2000}
           enableMasking={true}
           onMarkerClick={handleMarkerClick}
